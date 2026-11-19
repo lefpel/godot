@@ -1,0 +1,21 @@
+extends AnimatableBody3D
+## Дверь (сцена door.tscn). Метод open() опускает её в пол.
+
+@export var open_height := 2.8
+@export var open_time := 1.0
+
+var is_open := false
+
+
+func open() -> void:
+	if is_open:
+		return
+	is_open = true
+	var tween := create_tween()
+	tween.tween_property(self, "position:y", position.y - open_height, open_time) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.finished.connect(_on_opened)
+
+
+func _on_opened() -> void:
+	$CollisionShape3D.set_deferred("disabled", true)
